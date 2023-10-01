@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="config-gui" Database="./config-gui.tags">
+  <Project Name="config-gui" Path="config-gui.project" Active="Yes" />
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug_x64" Selected="yes">
+      <Project Name="config-gui" ConfigName="Debug_x64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Profile_x64" Selected="yes">
+      <Project Name="config-gui" ConfigName="Profile_x64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release_x64" Selected="yes">
+      <Project Name="config-gui" ConfigName="Release_x64"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
