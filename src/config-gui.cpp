@@ -17,6 +17,30 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
 #endif // __orxMSVC__
 
+void orxConfig_DrawEditableValue(const orxSTRING key)
+{
+  ImGui::PushID(key);
+  if (orxConfig_IsList(key))
+  {
+    ImGui::Text("Lists are unsupported");
+  }
+  else
+  {
+    orxCHAR buf[1024] = "";
+    auto value = orxConfig_GetString(key);
+    auto copyLength = orxMIN(orxString_GetLength(value), sizeof(buf));
+    if (copyLength > 0)
+    {
+      orxString_NCopy(buf, value, copyLength);
+    }
+    if (ImGui::InputText("", buf, sizeof(buf)))
+    {
+      orxConfig_SetString(key, buf);
+    }
+  }
+  ImGui::PopID();
+}
+
 void orxConfig_DrawValue(const orxSTRING key)
 {
   if (orxConfig_IsList(key))
@@ -38,7 +62,7 @@ void orxConfig_DrawValue(const orxSTRING key)
   }
 }
 
-void orxConfig_DrawSection(const orxSTRING section)
+void orxConfig_DrawSection(const orxSTRING section, orxBOOL readOnly)
 {
   // Push the selected config section to make it active
   orxConfig_PushSection(section);
@@ -58,7 +82,14 @@ void orxConfig_DrawSection(const orxSTRING section)
 
       // Draw the value column
       ImGui::TableNextColumn();
-      orxConfig_DrawValue(key);
+      if (readOnly)
+      {
+        orxConfig_DrawValue(key);
+      }
+      else
+      {
+        orxConfig_DrawEditableValue(key);
+      }
     }
     ImGui::EndTable();
   }
@@ -78,6 +109,18 @@ void orxConfig_DrawSectionViewerWindow()
 {
   // Begin a new window
   ImGui::Begin("Config section viewer");
+
+  orxConfig_PushSection("GUI");
+  if (!orxConfig_HasValue("ReadOnly"))
+  {
+    orxConfig_SetBool("ReadOnly", orxTRUE);
+  }
+  bool readOnly = orxConfig_GetBool("ReadOnly");
+  if (ImGui::Checkbox("Read only", &readOnly))
+  {
+    orxConfig_SetBool("ReadOnly", readOnly);
+  }
+  orxConfig_PopSection();
 
   if (ImGui::BeginCombo("", orxConfig_GetGUISelectedSection()))
   {
@@ -101,7 +144,7 @@ void orxConfig_DrawSectionViewerWindow()
   auto section = orxConfig_GetGUISelectedSection();
   if (orxString_GetLength(section) > 0)
   {
-    orxConfig_DrawSection(section);
+    orxConfig_DrawSection(section, readOnly);
   }
 
   // Let ImGui know the window is complete
