@@ -70,7 +70,6 @@ const orxSTRING orxConfig_GetGUISelectedSection()
 {
   orxConfig_PushSection("GUISections");
   auto section = orxConfig_GetString("Selected");
-  orxLOG("Selected: %s", section);
   orxConfig_PopSection();
   return section;
 }
